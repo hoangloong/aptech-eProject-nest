@@ -17,8 +17,8 @@ model Category {
   thumbnail   String?
   parentId    Int?
   category    Category?  @relation("SubCategory", fields: [parentId], references: [id])
-  Product     Product[]
-  Category    Category[] @relation("SubCategory")
+  products    Product[]
+  categories  Category[] @relation("SubCategory")
 }
 
 model Product {

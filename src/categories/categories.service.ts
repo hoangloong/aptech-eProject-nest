@@ -14,7 +14,7 @@ export class CategoriesService {
       where: {
         parentId: null,
       },
-      include: { category: true, Category: true, Product: true },
+      include: { categories: true, products: true },
     });
   }
 
