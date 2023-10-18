@@ -10,7 +10,9 @@ export class CategoriesService {
   }
 
   findAll() {
-    return this.prisma.category.findMany({ include: { category: true } });
+    return this.prisma.category.findMany({
+      include: { category: true, Category: true, Product: true },
+    });
   }
 
   findOne(uniqInput: number) {
