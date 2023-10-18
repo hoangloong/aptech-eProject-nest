@@ -11,6 +11,9 @@ export class CategoriesService {
 
   findAll() {
     return this.prisma.category.findMany({
+      where: {
+        parentId: null,
+      },
       include: { category: true, Category: true, Product: true },
     });
   }
