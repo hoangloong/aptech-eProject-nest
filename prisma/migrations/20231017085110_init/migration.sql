@@ -2,6 +2,9 @@
 CREATE TABLE "Category" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT,
+    "thumbnail" TEXT,
+    "parentId" INTEGER NOT NULL,
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
@@ -100,6 +103,9 @@ CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Customer_phone_key" ON "Customer"("phone");
+
+-- AddForeignKey
+ALTER TABLE "Category" ADD CONSTRAINT "Category_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE SET NULL ON UPDATE CASCADE;

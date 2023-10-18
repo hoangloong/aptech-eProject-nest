@@ -11,11 +11,14 @@ datasource db {
 }
 
 model Category {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String?
   thumbnail   String?
+  parentId    Int?
+  category    Category?  @relation("SubCategory", fields: [parentId], references: [id])
   Product     Product[]
+  Category    Category[] @relation("SubCategory")
 }
 
 model Product {
