@@ -21,9 +21,6 @@ export class CategoriesController {
 
   @Get()
   async findAll() {
-    const data = await this.categoriesService.findAll();
-    console.log(data);
-
     return this.categoriesService.findAll();
   }
 
