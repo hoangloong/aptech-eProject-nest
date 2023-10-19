@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -21,18 +22,8 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
-  }
-
-  @Get()
-  findByCategories(
-    @Param('categories') categories: string,
-    @Param('orderBy') orderBy: string,
-  ) {
-    console.log(categories, orderBy);
-
-    return this.productsService.findAll();
+  findAll(@Query() query) {
+    return this.productsService.findAll(query);
   }
 
   @Get(':id')

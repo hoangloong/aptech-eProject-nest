@@ -10,12 +10,24 @@ export class ProductsService {
     return this.prisma.product.create({ data: createProductDto });
   }
 
-  findAll() {
-    return this.prisma.product.findMany();
-  }
+  findAll(queryParams: { [key: string]: string }) {
+    if (queryParams['categories']) {
+      const categories = queryParams['categories'].split(',').map((id) => +id);
+      return this.prisma.product.findMany({
+        where: { categoryId: { in: categories } },
+        include: {
+          productImages: true,
+          reviews: true,
+        },
+      });
+    }
 
-  findByCategories() {
-    return this.prisma.product.findMany();
+    return this.prisma.product.findMany({
+      include: {
+        productImages: true,
+        reviews: true,
+      },
+    });
   }
 
   findOne(id: number) {
