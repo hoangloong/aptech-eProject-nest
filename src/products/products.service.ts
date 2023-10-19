@@ -31,7 +31,10 @@ export class ProductsService {
   }
 
   findOne(id: number) {
-    return this.prisma.category.findUnique({ where: { id } });
+    return this.prisma.product.findUnique({
+      where: { id },
+      include: { productImages: true, reviews: true },
+    });
   }
 
   update(id: number, updateProductDto: Prisma.ProductUpdateInput) {
