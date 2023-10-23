@@ -18,6 +18,7 @@ export class ProductsService {
         include: {
           productImages: true,
           reviews: true,
+          productAttributes: true,
         },
       });
     }
@@ -26,6 +27,7 @@ export class ProductsService {
       include: {
         productImages: true,
         reviews: true,
+        productAttributes: true,
       },
     });
   }
@@ -33,7 +35,7 @@ export class ProductsService {
   findOne(id: number) {
     return this.prisma.product.findUnique({
       where: { id },
-      include: { productImages: true, reviews: true },
+      include: { productImages: true, reviews: true, productAttributes: true },
     });
   }
 

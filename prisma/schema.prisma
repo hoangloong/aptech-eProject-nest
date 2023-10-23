@@ -22,21 +22,33 @@ model Category {
 }
 
 model Product {
-  id            Int            @id @default(autoincrement())
-  name          String
-  SKU           String
-  description   String
-  price         Int            @default(0)
-  stock         Int            @default(0)
-  categoryId    Int?
-  category      Category?      @relation(fields: [categoryId], references: [id])
-  wishlist      Wishlist[]
-  carts         Cart[]
-  orderItems    OrderItem[]
-  productImages ProductImage[]
-  reviews       Review[]
-  weight        Int
-  weightUnit    String
+  id                Int                @id @default(autoincrement())
+  name              String
+  SKU               String
+  description       String
+  price             Int                @default(0)
+  stock             Int                @default(0)
+  createdDate       DateTime           @default(now())
+  categoryId        Int?
+  category          Category?          @relation(fields: [categoryId], references: [id])
+  wishlist          Wishlist[]
+  carts             Cart[]
+  orderItems        OrderItem[]
+  productImages     ProductImage[]
+  reviews           Review[]
+  productAttributes ProductAttribute[]
+}
+
+model ProductAttribute {
+  id              Int      @id @default(autoincrement())
+  productId       Int
+  product         Product  @relation(fields: [productId], references: [id])
+  weight          Int
+  weightUnit      String
+  originPrice     Int
+  discountPercent Int
+  discountPrice   Int
+  discountDueDate DateTime
 }
 
 model ProductImage {
