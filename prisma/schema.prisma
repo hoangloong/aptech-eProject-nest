@@ -59,12 +59,14 @@ model ProductImage {
 }
 
 model Review {
-  id           Int     @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   productId    Int
-  product      Product @relation(fields: [productId], references: [id])
+  product      Product  @relation(fields: [productId], references: [id])
   customerName String
   rate         Int
+  title        String
   comment      String
+  createdDate  DateTime @default(now())
 }
 
 model Wishlist {
