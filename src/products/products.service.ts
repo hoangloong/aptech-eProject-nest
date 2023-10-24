@@ -11,19 +11,22 @@ export class ProductsService {
   }
 
   findAll(queryParams: { [key: string]: string }) {
+    const query = {};
     if (queryParams['categories']) {
       const categories = queryParams['categories'].split(',').map((id) => +id);
-      return this.prisma.product.findMany({
-        where: { categoryId: { in: categories } },
-        include: {
-          productImages: true,
-          reviews: true,
-          productAttributes: true,
-        },
-      });
+      query['where'] = { categoryId: { in: categories } };
+    }
+
+    if (queryParams['product_name']) {
+      const keyword = queryParams['product_name'];
+      query['where'] = {
+        ...query['where'],
+        name: { contains: keyword, mode: 'insensitive' },
+      };
     }
 
     return this.prisma.product.findMany({
+      where: query['where'],
       include: {
         productImages: true,
         reviews: true,
