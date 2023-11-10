@@ -44,8 +44,6 @@ export class ProductsService {
       };
     }
 
-    console.log(query);
-
     return this.prisma.product.findMany({
       where: query['where'],
       orderBy: query['orderBy'],
