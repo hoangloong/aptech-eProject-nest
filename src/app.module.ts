@@ -12,6 +12,8 @@ import { PaymentsModule } from './payments/payments.module';
 import { OrderItemsModule } from './order-items/order-items.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ProductAttributesModule } from './product-attributes/product-attributes.module';
+import { ProductImagesModule } from './product-images/product-images.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { UsersModule } from './users/users.module';
     OrderItemsModule,
     AuthModule,
     UsersModule,
+    ProductAttributesModule,
+    ProductImagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

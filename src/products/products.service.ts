@@ -1,20 +1,32 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
+import { uniq } from 'lodash';
 
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
   create(createProductDto: Prisma.ProductCreateInput) {
-    return this.prisma.product.create({ data: createProductDto });
+    return this.prisma.product.create({ data: { ...createProductDto } });
   }
 
-  findAll(queryParams: { [key: string]: string }) {
+  async findAll(queryParams: { [key: string]: any }) {
     const query = {};
     if (queryParams['categories']) {
-      const categories = queryParams['categories'].split(',').map((id) => +id);
-      query['where'] = { categoryId: { in: categories } };
+      const categories: number[] = queryParams['categories']
+        .split(',')
+        .map((id) => +id);
+      const categoriesId = await (
+        await this.prisma.category.findMany({
+          where: { id: { in: categories } },
+          include: { categories: true },
+        })
+      ).flatMap((item) =>
+        item.categories.length ? item.categories.map((x) => x.id) : item.id,
+      );
+
+      query['where'] = { categoryId: { in: uniq(categoriesId) } };
     }
 
     if (queryParams['product_name']) {
@@ -25,13 +37,27 @@ export class ProductsService {
       };
     }
 
+    if (queryParams['created_date']) {
+      query['orderBy'] = {
+        ...query['orderBy'],
+        createdDate: queryParams['created_date'],
+      };
+    }
+
+    console.log(query);
+
     return this.prisma.product.findMany({
       where: query['where'],
+      orderBy: query['orderBy'],
       include: {
         productImages: true,
         reviews: true,
         productAttributes: true,
       },
+      skip: queryParams['paging']
+        ? queryParams['paging'] * queryParams['page_size']
+        : 1,
+      take: parseInt(queryParams['page_size']) || 5,
     });
   }
 
