@@ -44,7 +44,7 @@ export class ProductsService {
       };
     }
 
-    return this.prisma.product.findMany({
+    const data = await this.prisma.product.findMany({
       where: query['where'],
       orderBy: query['orderBy'],
       include: {
@@ -57,6 +57,13 @@ export class ProductsService {
         : 1,
       take: parseInt(queryParams['page_size']) || 5,
     });
+
+    const total = await this.prisma.product.count();
+
+    return {
+      data,
+      total,
+    };
   }
 
   findOne(id: number) {
