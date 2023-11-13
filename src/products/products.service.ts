@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
 import { uniq } from 'lodash';
+import * as moment from 'moment';
 
 @Injectable()
 export class ProductsService {
@@ -65,6 +66,32 @@ export class ProductsService {
     return {
       data,
       total,
+    };
+  }
+
+  async findDealOfWeek() {
+    const endOfWeek = moment()
+      .utc()
+      .endOf('week')
+      .add(1, 'day')
+      .endOf('day')
+      .toISOString();
+    const data = await this.prisma.product.findMany({
+      include: {
+        productImages: true,
+        reviews: true,
+        productAttributes: true,
+      },
+    });
+    return {
+      data: data.filter((item) =>
+        item.productAttributes.every((x) => {
+          return (
+            x.discountDueDate.toUTCString() ===
+            new Date(endOfWeek).toUTCString()
+          );
+        }),
+      ),
     };
   }
 
