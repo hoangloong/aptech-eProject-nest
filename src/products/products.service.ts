@@ -58,7 +58,9 @@ export class ProductsService {
       take: parseInt(queryParams['page_size']) || 5,
     });
 
-    const total = await this.prisma.product.count();
+    const total = await this.prisma.product.count({
+      where: query['where'],
+    });
 
     return {
       data,
