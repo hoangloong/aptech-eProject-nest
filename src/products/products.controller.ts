@@ -7,10 +7,19 @@ import {
   Param,
   Delete,
   Query,
+  HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Prisma } from '@prisma/client';
+import { Response } from 'express';
+
+export interface CreateProduct {
+  product: Prisma.ProductCreateInput;
+  attributes: Prisma.ProductAttributeCreateManyInput[];
+  imgs: Prisma.ProductImageCreateManyInput[];
+}
 
 @Controller('products')
 export class ProductsController {
@@ -19,6 +28,18 @@ export class ProductsController {
   @Post()
   create(@Body() createProductDto: Prisma.ProductCreateInput) {
     return this.productsService.create(createProductDto);
+  }
+
+  @Post('/bulk-create')
+  bulkCreate(
+    @Body()
+    createProductDto: CreateProduct,
+    @Res() res: Response,
+  ) {
+    return res.status(HttpStatus.CREATED).send({
+      httpStatusCode: HttpStatus.CREATED,
+      mesage: this.productsService.createMany(createProductDto),
+    });
   }
 
   @Get()

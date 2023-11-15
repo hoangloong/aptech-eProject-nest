@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
 import { uniq } from 'lodash';
 import * as moment from 'moment';
+import { CreateProduct } from './products.controller';
 
 @Injectable()
 export class ProductsService {
@@ -10,6 +11,30 @@ export class ProductsService {
 
   create(createProductDto: Prisma.ProductCreateInput) {
     return this.prisma.product.create({ data: { ...createProductDto } });
+  }
+
+  async createMany(createProductDto: CreateProduct) {
+    const productCreated = await this.prisma.product.create({
+      data: createProductDto.product,
+    });
+
+    const attributesCreated = await this.prisma.productAttribute.createMany({
+      data: createProductDto.attributes.map((e) => ({
+        ...e,
+        productId: productCreated.id,
+      })),
+    });
+
+    const imgsCreated = await this.prisma.productImage.createMany({
+      data: createProductDto.imgs.map((e) => ({
+        ...e,
+        productId: productCreated.id,
+      })),
+    });
+
+    if (productCreated.id && attributesCreated.count && imgsCreated.count) {
+      return 'Create product successfully';
+    } else return 'Errors';
   }
 
   async findAll(queryParams: { [key: string]: any }) {
